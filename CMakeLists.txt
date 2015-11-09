@@ -1,0 +1,34 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/modules")
+
+PROJECT(freenetconfd-plugins)
+
+FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
+
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+SET(SOURCES
+	src/network.c
+)
+
+ADD_LIBRARY(freenetconfd-plugin-network MODULE ${SOURCES})
+SET_TARGET_PROPERTIES(freenetconfd-plugin-network PROPERTIES OUTPUT_NAME freenetconfd-plugin-network PREFIX "")
+
+FIND_PACKAGE(LIBUBOX REQUIRED)
+INCLUDE_DIRECTORIES(${LIBUBOX_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(freenetconfd-plugin-network ${LIBUBOX_LIBRARIES})
+
+FIND_PACKAGE(Threads)
+TARGET_LINK_LIBRARIES(freenetconfd-plugin-network ${CMAKE_THREAD_LIBS_INIT})
+
+INSTALL(
+	TARGETS
+		freenetconfd-plugin-network
+	LIBRARY DESTINATION lib/freenetconfd/
+)
+
+INSTALL(
+	FILES
+		yang/ietf-ip@2014-06-16.yang
+	DESTINATION etc/yang/
+)
