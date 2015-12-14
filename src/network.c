@@ -61,6 +61,8 @@ static int set_mtu_node(datastore_t *self, char *value)
 
 	pid_t pid=fork();
 	if (pid==0) {
+		DEBUG("/sbin/ifconfig ifconfig %s mtu %s up\n", node->value, value);
+		execl("/sbin/ifconfig", "ifconfig", node->value, "mtu", value, "up", (char *) NULL);
 		DEBUG("/usr/bin/ifconfig %s mtu %s up\n", node->value, value);
 		execl("/usr/bin/ifconfig", node->value, "mtu", value, "up", (char *) NULL);
 		exit(127);
